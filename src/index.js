@@ -1,14 +1,15 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import reportWebVitals from './reportWebVitals';
-import Users from "./components/users";
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import './index.css'
+import 'bootstrap/dist/css/bootstrap.css'
+import reportWebVitals from './reportWebVitals'
+import User from "./components/user";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById('root'))
 root.render(
   <React.StrictMode>
-    <Users />
+    <User />
   </React.StrictMode>
-);
+)
 
-reportWebVitals();
+reportWebVitals()
