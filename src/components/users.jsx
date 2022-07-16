@@ -1,17 +1,8 @@
-import React, { useState } from 'react'
-import api from '../api'
+import React from 'react'
 import User from './user'
-import SearchStatus from "./searchStatus";
+import SearchStatus from "./searchStatus"
 
-const Users = () => {
-    const [users, setUsers] = useState(api.users.fetchAll())
-    const handleDelete = (userId) => {
-        setUsers(prevState => prevState.filter(user => user._id !== userId))
-    }
-    const handleChangeBookmark = (id) => {
-        setUsers(prevState => prevState.map(({ bookmark, ...state}) =>
-                ({...state, bookmark: state._id === id ? !bookmark : bookmark})))
-    }
+const Users = ({users, onDeleterUser, onChangeBookmark}) => {
     const Table = () => {
         return <table className="table">
             <thead>
@@ -29,8 +20,8 @@ const Users = () => {
                 {users.map(user =>
                         <User
                             key={user._id}
-                            onDeleteUser={handleDelete}
-                            onChangeBookmark={handleChangeBookmark}
+                            onDeleteUser={onDeleterUser}
+                            onChangeBookmark={onChangeBookmark}
                             {...user}/>
                     )
                 }
