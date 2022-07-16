@@ -6,16 +6,15 @@ const User = () => {
     const handleDelete = (userId) => {
         setUsers(prevState => prevState.filter(user => user._id !== userId))
     }
-    const renderPhrase = (number) => {
-        const word = number >= 2 && number <= 4 ? 'человека' : 'человек'
-        const phrase = number > 0 ? `${number} ${word} тусанёт сегодня с тобой` : 'Никто с тобой не тусанёт'
-        const classNames = `badge bg-${number > 0 ? 'primary':'danger'}`
-        return <h1><span className={classNames}>{ phrase }</span></h1>
-    }
-    const Badge = ({ props }) => {
-        const { name, color } = props
+    const Badge = ({ name, color }) => {
         const classNames = `badge bg-${color}`
         return <span className={classNames}>{name}</span>
+    }
+    const renderPhrase = (number) => {
+        const word = number >= 2 && number <= 4 ? 'человека' : 'человек'
+        const phrase = number > 0 ? `${number} ${word} Tусанёт сегодня с тобой` : 'Никто с тобой не тусанёт'
+        const color = number > 0 ? 'primary':'danger'
+        return <h2><Badge name={phrase} color={color}/></h2>
     }
     const Table = () => {
         return <table className="table">
@@ -30,12 +29,11 @@ const User = () => {
                 </tr>
             </thead>
             <tbody>
-                {users.map(user => <TableRow key={user._id} user={user}/>)}
+                {users.map(user => <TableRow key={user._id} {...user}/>)}
             </tbody>
         </table>
     }
-    const TableRow = ({ user }) => {
-        const {_id: id, name, qualities, profession, completedMeetings, rate} = user
+    const TableRow = ({_id: id, name, qualities, profession, completedMeetings, rate}) => {
         return (
             <tr>
                 <td>{name}</td>
