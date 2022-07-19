@@ -1,8 +1,7 @@
 import React from 'react'
 import User from './user'
-import SearchStatus from "./searchStatus"
 
-const Users = ({users, onDeleterUser, onChangeBookmark}) => {
+const Users = ({users, ...rest}) => {
     const Table = () => {
         return <table className="table">
             <thead>
@@ -20,8 +19,7 @@ const Users = ({users, onDeleterUser, onChangeBookmark}) => {
                 {users.map(user =>
                         <User
                             key={user._id}
-                            onDeleteUser={onDeleterUser}
-                            onChangeBookmark={onChangeBookmark}
+                            {...rest}
                             {...user}/>
                     )
                 }
@@ -29,12 +27,7 @@ const Users = ({users, onDeleterUser, onChangeBookmark}) => {
         </table>
     }
 
-    return (
-        <>
-            <SearchStatus number={users.length}/>
-            {users.length > 0 && <Table/>}
-        </>
-    )
+    return <Table/>
 }
 
 export default Users
