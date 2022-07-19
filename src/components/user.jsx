@@ -1,12 +1,12 @@
 import React from 'react'
-import Qualitie from "./qualitie";
+import Quality from "./quality";
 import Bookmark from "./bookmark";
 
 const User = ({_id: id, name, qualities, profession, completedMeetings, rate, bookmark, onDeleteUser, onChangeBookmark}) => {
     return (
         <tr>
             <td>{name}</td>
-            <td><Qualitie qualities={qualities}/></td>
+            <td>{qualities.map(({_id, ...quality}) => <Quality key={_id} {...quality} />)}</td>
             <td>{profession.name}</td>
             <td>{completedMeetings}</td>
             <td>{rate}/5</td>

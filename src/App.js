@@ -1,6 +1,7 @@
 import React, {useState} from 'react'
 import api from "./api"
 import Users from "./components/users"
+import SearchStatus from "./components/searchStatus";
 
 const App = () => {
     const [users, setUsers] = useState(api.users.fetchAll())
@@ -13,11 +14,14 @@ const App = () => {
             ({...state, bookmark: state._id === id ? !bookmark : bookmark})))
     }
 
-    return <Users
-        onDeleterUser={handleDelete}
-        onChangeBookmark={handleChangeBookmark}
-        users={users}
-    />
+    return <>
+            <SearchStatus number={users.length}/>
+            {users.length > 0 && <Users
+                onDeleteUser={handleDelete}
+                onChangeBookmark={handleChangeBookmark}
+                users={users}
+            />}
+        </>
 }
 
 export default App
