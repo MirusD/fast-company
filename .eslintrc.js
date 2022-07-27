@@ -13,7 +13,7 @@ module.exports = {
     },
     plugins: ['react'],
     rules: {
-        indent: ['error', 4],
+        indent: 'off',
         'space-before-function-paren': [
             'error',
             { anonymous: 'always', named: 'never' }

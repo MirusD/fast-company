@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
+import _ from 'lodash'
 
 import { paginate } from '../utils/pagination'
 import api from '../api'
@@ -15,12 +16,11 @@ const Users = ({ users, ...rest }) => {
     const [selectedProf, setSelectedProf] = useState()
     const pageSize = 2
     const filteredUsers = selectedProf
-        ? users.filter((user) => user.profession === selectedProf)
+        ? users.filter((user) => _.isEqual(user.profession, selectedProf))
         : users
     const count = filteredUsers.length
     const userCrop = paginate(filteredUsers, currentPage, pageSize)
     const clearFilter = () => setSelectedProf()
-
     useEffect(() => {
         api.professions.fetchAll().then((data) => setProfessions(data))
     }, [])
