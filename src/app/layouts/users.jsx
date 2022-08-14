@@ -4,10 +4,10 @@ import _ from 'lodash'
 import { paginate } from '../utils/pagination'
 import api from '../api'
 
-import Pagination from './pagination'
-import GroupList from './groupList'
-import SearchStatus from './searchStatus'
-import UsersTable from './usersTable'
+import Pagination from '../components/pagination'
+import GroupList from '../components/groupList'
+import SearchStatus from '../components/searchStatus'
+import UsersTable from '../components/usersTable'
 
 const Users = () => {
     const [users, setUsers] = useState([])

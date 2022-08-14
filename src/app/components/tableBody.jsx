@@ -1,5 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
+
 import _ from 'lodash'
 
 const TableBody = ({ data, columns }) => {
@@ -11,7 +13,15 @@ const TableBody = ({ data, columns }) => {
             }
             return component
         }
-        return _.get(item, columns[column].path)
+
+        const path = columns[column].path
+        const text = _.get(item, path)
+
+        return path === 'name' ? (
+            <Link to={`users/${item._id}`}>{text}</Link>
+        ) : (
+            text
+        )
     }
 
     return (
