@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from 'react'
-import { useParams, useHistory } from 'react-router-dom'
+import PropTypes from 'prop-types'
+import { useHistory } from 'react-router-dom'
 
 import api from '../api'
 
 import QualitiesList from './qualitiesList'
 
-const UserPage = () => {
+const UserPage = ({ userId }) => {
     const [userData, setUserData] = useState([])
     const [fetching, setFetching] = useState(true)
-    const { id } = useParams()
     const history = useHistory()
 
     useEffect(() => {
         api.users
-            .getById(id)
+            .getById(userId)
             .then((data) => setUserData(data))
             .finally(() => setFetching(false))
     }, [])
@@ -31,6 +31,10 @@ const UserPage = () => {
             </button>
         </>
     )
+}
+
+UserPage.propTypes = {
+    userId: PropTypes.string.isRequired
 }
 
 export default UserPage
