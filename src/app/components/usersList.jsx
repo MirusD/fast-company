@@ -8,6 +8,7 @@ import Pagination from '../components/pagination'
 import GroupList from '../components/groupList'
 import SearchStatus from '../components/searchStatus'
 import UsersTable from '../components/usersTable'
+import TextField from './textField'
 
 const UsersList = () => {
     const [users, setUsers] = useState([])
@@ -16,6 +17,7 @@ const UsersList = () => {
     const [selectedProf, setSelectedProf] = useState()
     const [sortBy, setSortBy] = useState({ path: 'name', order: 'asc' })
     const [isFetching, setFetching] = useState(true)
+    const [searchText, setSearchText] = useState('')
     const pageSize = 8
 
     useEffect(() => {
@@ -43,15 +45,29 @@ const UsersList = () => {
             }))
         )
     }
-    const handleProfessionsSelect = (item) => setSelectedProf(item)
+    const handleProfessionsSelect = (item) => {
+        setSelectedProf(item)
+        searchText && setSearchText('')
+    }
     const handlePageChange = (pageIndex) => setCurrentPage(pageIndex)
     const handleSort = (item) => setSortBy(item)
+    const handleChangeSearchField = ({ target }) => {
+        setSearchText(target.value)
+        selectedProf && setSelectedProf()
+    }
     const clearFilter = () => setSelectedProf()
 
     if (!isFetching) {
-        const filteredUsers = selectedProf
-            ? users.filter((user) => _.isEqual(user.profession, selectedProf))
-            : users
+        const filteredUsers =
+            selectedProf || searchText
+                ? users.filter((user) => {
+                      if (searchText) {
+                          return user.name.includes(searchText)
+                      } else if (selectedProf) {
+                          return _.isEqual(user.profession, selectedProf)
+                      } else return false
+                  })
+                : users
         const count = filteredUsers.length
         const sortedUsers = _.orderBy(
             filteredUsers,
@@ -81,6 +97,11 @@ const UsersList = () => {
                         )}
                         <div className="d-flex flex-column">
                             <SearchStatus number={count} />
+                            <TextField
+                                placeholder="Search..."
+                                value={searchText}
+                                onChange={handleChangeSearchField}
+                            />
                             {count > 0 && (
                                 <UsersTable
                                     users={userCrop}
