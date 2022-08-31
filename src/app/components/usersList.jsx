@@ -17,7 +17,7 @@ const UsersList = () => {
     const [selectedProf, setSelectedProf] = useState()
     const [sortBy, setSortBy] = useState({ path: 'name', order: 'asc' })
     const [isFetching, setFetching] = useState(true)
-    const [searchText, setSearchText] = useState('')
+    const [searchQuery, setSearchQuery] = useState('')
     const pageSize = 8
 
     useEffect(() => {
@@ -32,7 +32,7 @@ const UsersList = () => {
     }, [])
     useEffect(() => {
         setCurrentPage(1)
-    }, [selectedProf])
+    }, [selectedProf, searchQuery])
 
     const handleDelete = (userId) => {
         setUsers((prevState) => prevState.filter((user) => user._id !== userId))
@@ -47,27 +47,27 @@ const UsersList = () => {
     }
     const handleProfessionsSelect = (item) => {
         setSelectedProf(item)
-        searchText && setSearchText('')
+        searchQuery && setSearchQuery('')
     }
     const handlePageChange = (pageIndex) => setCurrentPage(pageIndex)
     const handleSort = (item) => setSortBy(item)
-    const handleChangeSearchField = ({ target }) => {
-        setSearchText(target.value)
-        selectedProf && setSelectedProf()
+    const handleSearchQuery = ({ target }) => {
+        setSearchQuery(target.value)
+        selectedProf && setSelectedProf(undefined)
     }
     const clearFilter = () => setSelectedProf()
 
     if (!isFetching) {
-        const filteredUsers =
-            selectedProf || searchText
-                ? users.filter((user) => {
-                      if (searchText) {
-                          return user.name.includes(searchText)
-                      } else if (selectedProf) {
-                          return _.isEqual(user.profession, selectedProf)
-                      } else return false
-                  })
-                : users
+        const filteredUsers = searchQuery
+            ? users.filter(
+                  (user) =>
+                      user.name
+                          .toLowerCase()
+                          .indexOf(searchQuery.toLowerCase()) !== -1
+              )
+            : selectedProf
+            ? users.filter((user) => _.isEqual(user.profession, selectedProf))
+            : users
         const count = filteredUsers.length
         const sortedUsers = _.orderBy(
             filteredUsers,
@@ -99,8 +99,8 @@ const UsersList = () => {
                             <SearchStatus number={count} />
                             <TextField
                                 placeholder="Search..."
-                                value={searchText}
-                                onChange={handleChangeSearchField}
+                                value={searchQuery}
+                                onChange={handleSearchQuery}
                             />
                             {count > 0 && (
                                 <UsersTable
