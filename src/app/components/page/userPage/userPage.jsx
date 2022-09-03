@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { useHistory } from 'react-router-dom'
 
-import api from '../api'
+import api from '../../../api'
 
-import QualitiesList from './qualitiesList'
+import QualitiesList from '../../ui/qualities/qualitiesList'
 
 const UserPage = ({ userId }) => {
     const [userData, setUserData] = useState([])
@@ -26,8 +26,8 @@ const UserPage = ({ userId }) => {
             <QualitiesList qualities={userData.qualities} />
             <p>completedMeetings: {userData.completedMeetings}</p>
             <h2>Rate: {userData.rate}</h2>
-            <button onClick={() => history.replace('/users')}>
-                Все Пользователи
+            <button onClick={() => history.replace(`/users/${userId}/edit`)}>
+                Изменить
             </button>
         </>
     )

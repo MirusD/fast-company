@@ -1,5 +1,5 @@
 import React from 'react'
-import Badge from './badge'
+import Badge from '../common/badge'
 import PropTypes from 'prop-types'
 
 const SearchStatus = ({ number }) => {

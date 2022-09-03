@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import _ from 'lodash'
 
-import { paginate } from '../utils/pagination'
-import api from '../api'
+import { paginate } from '../../../utils/pagination'
+import api from '../../../api'
 
-import Pagination from '../components/pagination'
-import GroupList from '../components/groupList'
-import SearchStatus from '../components/searchStatus'
-import UsersTable from '../components/usersTable'
-import TextField from './textField'
+import Pagination from '../../common/pagination'
+import GroupList from '../../common/groupList'
+import SearchStatus from '../../ui/searchStatus'
+import UsersTable from '../../ui/usersTable'
+import TextField from '../../common/form/textField'
 
-const UsersList = () => {
+const UsersListPage = () => {
     const [users, setUsers] = useState([])
     const [professions, setProfessions] = useState()
     const [currentPage, setCurrentPage] = useState(1)
@@ -127,4 +127,4 @@ const UsersList = () => {
     } else return <h1 className="text-center mt-5">Загрузка...</h1>
 }
 
-export default UsersList
+export default UsersListPage
