@@ -16,10 +16,9 @@ const UserEditPage = ({ userId }) => {
         name: '',
         email: '',
         profession: '',
-        sex: '',
+        sex: 'male',
         qualities: []
     })
-    const [user, setUser] = useState()
     const [qualities, setQualities] = useState({})
     const [professions, setProfessions] = useState({})
     const [errors, setErrors] = useState({})
@@ -32,20 +31,19 @@ const UserEditPage = ({ userId }) => {
     }
     useEffect(() => {
         Promise.all([
-            api.users.getById(userId).then((data) => {
-                setUser(data)
-                setData({
-                    name: data.name,
-                    email: data.email,
-                    completedMeetings: data.completedMeetings,
-                    sex: data.sex,
-                    profession: data.profession._id,
-                    qualities: data.qualities.map((quality) => ({
-                        label: quality.name,
-                        value: quality._id
+            api.users
+                .getById(userId)
+                .then(({ profession, qualities, ...data }) => {
+                    setData((prevState) => ({
+                        ...prevState,
+                        ...data,
+                        profession: profession._id,
+                        qualities: qualities.map((quality) => ({
+                            label: quality.name,
+                            value: quality._id
+                        }))
                     }))
-                })
-            }),
+                }),
             api.professions.fetchAll().then((data) => setProfessions(data)),
             api.qualities.fetchAll().then((data) => setQualities(data))
         ]).finally(() => {
@@ -64,27 +62,25 @@ const UserEditPage = ({ userId }) => {
     }
     const handleSubmit = (e) => {
         e.preventDefault()
-        const qualitiesArr = Object.keys(qualities).map(
-            (qualityName) => qualities[qualityName]
-        )
-        const professionsArr = Object.keys(professions).map(
-            (professionName) => professions[professionName]
-        )
-        api.users.update(userId, {
-            ...user,
-            ...data,
-            profession: professionsArr.find(
-                (profession) => profession._id === data.profession
-            ),
-            qualities: data.qualities.reduce(
-                (res, quality) => [
-                    ...res,
-                    qualitiesArr.find((item) => quality.value === item._id)
-                ],
-                []
-            )
-        })
-        history.replace(`/users/${userId}`)
+        const qualitiesArr = Object.values(qualities)
+        const professionsArr = Object.values(professions)
+
+        api.users
+            .update(userId, {
+                ...data,
+                profession: professionsArr.find(
+                    (profession) => profession._id === data.profession
+                ),
+                qualities: data.qualities.reduce(
+                    (res, quality) => [
+                        ...res,
+                        qualitiesArr.find((item) => quality.value === item._id)
+                    ],
+                    []
+                )
+            })
+            .then((data) => history.push(`/users/${data._id}`))
+        console.log(data)
     }
     return (
         <div className="container mt-5">
