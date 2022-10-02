@@ -2,48 +2,33 @@ import React, { useState, useEffect } from 'react'
 import _ from 'lodash'
 
 import { paginate } from '../../../utils/pagination'
-import api from '../../../api'
-
 import Pagination from '../../common/pagination'
 import GroupList from '../../common/groupList'
 import SearchStatus from '../../ui/searchStatus'
 import UsersTable from '../../ui/usersTable'
 import TextField from '../../common/form/textField'
+import { useUser } from '../../../hooks/useUsers'
+import { useProfession } from '../../../hooks/useProfession'
 
 const UsersListPage = () => {
-    const [users, setUsers] = useState([])
-    const [professions, setProfessions] = useState()
     const [currentPage, setCurrentPage] = useState(1)
     const [selectedProf, setSelectedProf] = useState()
     const [sortBy, setSortBy] = useState({ path: 'name', order: 'asc' })
-    const [isFetching, setFetching] = useState(true)
     const [searchQuery, setSearchQuery] = useState('')
     const pageSize = 8
 
-    useEffect(() => {
-        api.users
-            .fetchAll()
-            .then((data) => setUsers(data))
-            .finally(() => setFetching(false))
-    }, [])
+    const { users } = useUser()
+    const { professions } = useProfession()
 
-    useEffect(() => {
-        api.professions.fetchAll().then((data) => setProfessions(data))
-    }, [])
     useEffect(() => {
         setCurrentPage(1)
     }, [selectedProf, searchQuery])
 
     const handleDelete = (userId) => {
-        setUsers((prevState) => prevState.filter((user) => user._id !== userId))
+        console.log(userId)
     }
     const handleChangeBookmark = (id) => {
-        setUsers((prevState) =>
-            prevState.map(({ bookmark, ...state }) => ({
-                ...state,
-                bookmark: state._id === id ? !bookmark : bookmark
-            }))
-        )
+        console.log(id)
     }
     const handleProfessionsSelect = (item) => {
         setSelectedProf(item)
@@ -57,74 +42,67 @@ const UsersListPage = () => {
     }
     const clearFilter = () => setSelectedProf()
 
-    if (!isFetching) {
-        const filteredUsers = searchQuery
-            ? users.filter(
-                  (user) =>
-                      user.name
-                          .toLowerCase()
-                          .indexOf(searchQuery.toLowerCase()) !== -1
-              )
-            : selectedProf
-            ? users.filter((user) => _.isEqual(user.profession, selectedProf))
-            : users
-        const count = filteredUsers.length
-        const sortedUsers = _.orderBy(
-            filteredUsers,
-            [sortBy.path],
-            [sortBy.order]
-        )
-        const userCrop = paginate(sortedUsers, currentPage, pageSize)
+    const filteredUsers = searchQuery
+        ? users.filter(
+              (user) =>
+                  user.name.toLowerCase().indexOf(searchQuery.toLowerCase()) !==
+                  -1
+          )
+        : selectedProf
+        ? users.filter((user) => _.isEqual(user.profession, selectedProf))
+        : users
+    const count = filteredUsers.length
+    const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order])
+    const userCrop = paginate(sortedUsers, currentPage, pageSize)
 
-        return (
-            <>
-                {users && (
-                    <div className="d-flex">
-                        {professions && (
-                            <div className="d-flex flex-column flex-shrink-0 p-3">
-                                <GroupList
-                                    items={professions}
-                                    selectedItem={selectedProf}
-                                    onItemSelect={handleProfessionsSelect}
-                                />
-                                <button
-                                    className="btn btn-secondary mt-2"
-                                    onClick={clearFilter}
-                                >
-                                    Очистить
-                                </button>
-                            </div>
-                        )}
-                        <div className="d-flex flex-column">
-                            <SearchStatus number={count} />
-                            <TextField
-                                placeholder="Search..."
-                                value={searchQuery}
-                                onChange={handleSearchQuery}
+    return (
+        <>
+            {users && (
+                <div className="d-flex">
+                    {professions && (
+                        <div className="d-flex flex-column flex-shrink-0 p-3">
+                            <GroupList
+                                items={professions}
+                                selectedItem={selectedProf}
+                                onItemSelect={handleProfessionsSelect}
                             />
-                            {count > 0 && (
-                                <UsersTable
-                                    users={userCrop}
-                                    onSort={handleSort}
-                                    selectedSort={sortBy}
-                                    onDeleteUser={handleDelete}
-                                    onChangeBookmark={handleChangeBookmark}
-                                />
-                            )}
-                            <div className="d-flex justify-content-center">
-                                <Pagination
-                                    itemsCount={count}
-                                    pageSize={pageSize}
-                                    currentPage={currentPage}
-                                    onPageChange={handlePageChange}
-                                />
-                            </div>
+                            <button
+                                className="btn btn-secondary mt-2"
+                                onClick={clearFilter}
+                            >
+                                Очистить
+                            </button>
+                        </div>
+                    )}
+                    <div className="d-flex flex-column">
+                        <SearchStatus number={count} />
+                        <TextField
+                            placeholder="Search..."
+                            value={searchQuery}
+                            onChange={handleSearchQuery}
+                        />
+                        {count > 0 && (
+                            <UsersTable
+                                users={userCrop}
+                                onSort={handleSort}
+                                selectedSort={sortBy}
+                                onDeleteUser={handleDelete}
+                                onChangeBookmark={handleChangeBookmark}
+                            />
+                        )}
+                        <div className="d-flex justify-content-center">
+                            <Pagination
+                                itemsCount={count}
+                                pageSize={pageSize}
+                                currentPage={currentPage}
+                                onPageChange={handlePageChange}
+                            />
                         </div>
                     </div>
-                )}
-            </>
-        )
-    } else return <h1 className="text-center mt-5">Загрузка...</h1>
+                </div>
+            )}
+        </>
+    )
 }
 
 export default UsersListPage

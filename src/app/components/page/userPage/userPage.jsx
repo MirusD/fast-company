@@ -17,7 +17,7 @@ const UserPage = ({ userId }) => {
         api.users
             .getById(userId)
             .then((data) => setUser(data))
-            .finally(setFetching(false))
+            .finally(() => setFetching(false))
     }, [])
 
     if (fetching || !user) return <h1>Loading</h1>
