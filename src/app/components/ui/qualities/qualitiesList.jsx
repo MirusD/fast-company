@@ -1,10 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Quality from './quality'
-import { useQuality } from '../../../hooks/useQualities'
+import { useQualities } from '../../../hooks/useQualities'
 
 const QualitiesList = ({ qualitiesId }) => {
-    const { isLoading } = useQuality()
+    const { isLoading } = useQualities()
     if (!isLoading) {
         return (
             <>

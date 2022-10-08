@@ -5,40 +5,26 @@ import Login from './layouts/login'
 import Main from './layouts/main'
 import Users from './layouts/users'
 import Navbar from './components/ui/navbar'
-import { ProfessionProvider } from './hooks/useProfession'
-import { QualitiesProvider } from './hooks/useQualities'
-import PropTypes from 'prop-types'
-
-const Providers = ({ children }) => {
-    return (
-        <ProfessionProvider>
-            <QualitiesProvider>{children}</QualitiesProvider>
-        </ProfessionProvider>
-    )
-}
-
-Providers.propTypes = {
-    children: PropTypes.oneOfType([
-        PropTypes.arrayOf(PropTypes.node),
-        PropTypes.node
-    ])
-}
+import AuthProvider from './hooks/useAuth'
+import Providers from './components/hoc/withProviders'
 
 const App = () => {
     return (
         <>
-            <Navbar />
-            <Providers>
-                <Switch>
-                    <Route
-                        path="/users/:userId?/:userEdit?"
-                        component={Users}
-                    />
-                    <Route path="/login/:type?" component={Login} />
-                    <Route path="/" exact component={Main} />
-                    <Redirect to="/" />
-                </Switch>
-            </Providers>
+            <AuthProvider>
+                <Navbar />
+                <Providers>
+                    <Switch>
+                        <Route
+                            path="/users/:userId?/:userEdit?"
+                            component={Users}
+                        />
+                        <Route path="/login/:type?" component={Login} />
+                        <Route path="/" exact component={Main} />
+                        <Redirect to="/" />
+                    </Switch>
+                </Providers>
+            </AuthProvider>
             <ToastContainer />
         </>
     )

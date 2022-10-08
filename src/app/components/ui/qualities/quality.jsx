@@ -1,10 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Badge from '../../common/badge'
-import { useQuality } from '../../../hooks/useQualities'
+import { useQualities } from '../../../hooks/useQualities'
 
 const Quality = ({ id }) => {
-    const { getQuality } = useQuality()
+    const { getQuality } = useQualities()
     return <Badge {...getQuality(id)} />
 }
 

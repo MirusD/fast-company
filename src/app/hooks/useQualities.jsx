@@ -5,7 +5,7 @@ import { toast } from 'react-toastify'
 
 const QualitiesContext = React.createContext()
 
-export const useQuality = () => {
+export const useQualities = () => {
     return useContext(QualitiesContext)
 }
 
@@ -27,7 +27,7 @@ export const QualitiesProvider = ({ children }) => {
 
     async function getQualitiesList() {
         try {
-            const { content } = await qualityService.get()
+            const { content } = await qualityService.fetchAll()
             setQualities(content)
             setIsLoading(false)
         } catch (error) {
@@ -45,7 +45,7 @@ export const QualitiesProvider = ({ children }) => {
     }
 
     return (
-        <QualitiesContext.Provider value={{ isLoading, getQuality }}>
+        <QualitiesContext.Provider value={{ qualities, isLoading, getQuality }}>
             {children}
         </QualitiesContext.Provider>
     )
