@@ -12,7 +12,6 @@ const UsersTable = ({
     onSort,
     selectedSort,
     onChangeBookmark,
-    onDeleteUser,
     ...rest
 }) => {
     const columns = {
@@ -25,14 +24,14 @@ const UsersTable = ({
         },
         qualities: {
             name: 'Качествa',
-            component: (user) => <Qualities qualitiesId={user.qualities} />
+            component: (user) => <Qualities qualities={user.qualities} />
         },
         professions: {
             name: 'Профессия',
             component: (user) => <Profession id={user.profession} />
         },
         completedMeetings: {
-            path: 'completedMeetings',
+            path: 'competedMeetings',
             name: 'Встретился, раз'
         },
         rate: { path: 'rate', name: 'Оценка' },
@@ -41,19 +40,9 @@ const UsersTable = ({
             name: 'Избранное',
             component: (user) => (
                 <Bookmark
-                    status={user.bookmark}
+                    status={false}
                     onClick={() => onChangeBookmark(user._id)}
                 />
-            )
-        },
-        delete: {
-            component: (user) => (
-                <button
-                    onClick={() => onDeleteUser(user._id)}
-                    className="btn btn-danger"
-                >
-                    Удалить
-                </button>
             )
         }
     }
@@ -71,8 +60,7 @@ UsersTable.propTypes = {
     users: PropTypes.array.isRequired,
     onSort: PropTypes.func.isRequired,
     selectedSort: PropTypes.object.isRequired,
-    onChangeBookmark: PropTypes.func.isRequired,
-    onDeleteUser: PropTypes.func.isRequired
+    onChangeBookmark: PropTypes.func.isRequired
 }
 
 export default UsersTable

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
-import api from '../../../api'
 import { validator } from '../../../utils/validator'
 
 import validatorConfig from './validatorConfig'
@@ -11,6 +10,9 @@ import SelectField from '../../common/form/selectField'
 import RadioField from '../../common/form/radioField'
 import MultiSelectField from '../../common/form/multiSelectField'
 import BackHistoryButton from '../../common/backButton'
+import { useQualities } from '../../../hooks/useQualities'
+import { useProfession } from '../../../hooks/useProfession'
+import { useAuth } from '../../../hooks/useAuth'
 
 const UserEditPage = ({ userId }) => {
     const history = useHistory()
@@ -21,10 +23,14 @@ const UserEditPage = ({ userId }) => {
         sex: 'male',
         qualities: []
     })
-    const [qualities, setQualities] = useState({})
-    const [professions, setProfessions] = useState({})
+    const {
+        qualities,
+        isLoading: isLoadingQualities,
+        getQuality
+    } = useQualities()
+    const { professions, isLoading: isLoadingProfessions } = useProfession()
+    const { currentUser, updateUser } = useAuth()
     const [errors, setErrors] = useState({})
-    const [isFetching, setIsFetching] = useState(true)
     const isValid = Object.keys(errors).length === 0
     const validate = () => {
         const errors = validator(data, validatorConfig)
@@ -32,28 +38,18 @@ const UserEditPage = ({ userId }) => {
         return Object.keys(errors).length === 0
     }
     useEffect(() => {
-        Promise.all([
-            api.users
-                .getById(userId)
-                .then(({ profession, qualities, ...data }) => {
-                    setData((prevState) => ({
-                        ...prevState,
-                        ...data,
-                        profession: profession._id,
-                        qualities: qualities.map((quality) => ({
-                            label: quality.name,
-                            value: quality._id
-                        }))
-                    }))
-                }),
-            api.professions.fetchAll().then((data) => setProfessions(data)),
-            api.qualities.fetchAll().then((data) => setQualities(data))
-        ]).finally(() => {
-            setIsFetching(false)
-        })
+        setData((prevState) => ({
+            ...prevState,
+            name: currentUser.name,
+            email: currentUser.email,
+            profession: currentUser.profession,
+            sex: currentUser.sex,
+            qualities: currentUser.qualities
+        }))
     }, [])
+
     useEffect(() => {
-        !isFetching && validate()
+        !(isLoadingQualities && isLoadingProfessions) && validate()
     }, [data])
 
     const handelChange = (target) => {
@@ -64,26 +60,23 @@ const UserEditPage = ({ userId }) => {
     }
     const handleSubmit = (e) => {
         e.preventDefault()
-        const qualitiesArr = Object.values(qualities)
-        const professionsArr = Object.values(professions)
-
-        api.users
-            .update(userId, {
-                ...data,
-                profession: professionsArr.find(
-                    (profession) => profession._id === data.profession
-                ),
-                qualities: data.qualities.reduce(
-                    (res, quality) => [
-                        ...res,
-                        qualitiesArr.find((item) => quality.value === item._id)
-                    ],
-                    []
-                )
-            })
-            .then((data) => history.push(`/users/${data._id}`))
-        console.log(data)
+        updateUser(data).then((data) => history.push(`/users/${data._id}`))
     }
+
+    const getQualitiesWithForma = () => {
+        return qualities.map((q) => ({ value: q._id, label: q.name }))
+    }
+
+    const getFormatQualitiesForValue = (value) => {
+        return value.map((v) => {
+            const quality = getQuality(v)
+            return {
+                value: quality._id,
+                label: quality.name
+            }
+        })
+    }
+
     return (
         <div className="container mt-5">
             <BackHistoryButton />
@@ -96,7 +89,9 @@ const UserEditPage = ({ userId }) => {
                             value={data.name}
                             onChange={handelChange}
                             error={errors.name}
-                            disabled={isFetching}
+                            disabled={
+                                isLoadingQualities || isLoadingProfessions
+                            }
                         />
                         <TextField
                             label="Электронная почта"
@@ -104,7 +99,9 @@ const UserEditPage = ({ userId }) => {
                             value={data.email}
                             onChange={handelChange}
                             error={errors.email}
-                            disabled={isFetching}
+                            disabled={
+                                isLoadingQualities || isLoadingProfessions
+                            }
                         />
                         <SelectField
                             label="Выбери свою профессию"
@@ -114,7 +111,9 @@ const UserEditPage = ({ userId }) => {
                             value={data.profession}
                             error={errors.profession}
                             name="profession"
-                            disabled={isFetching}
+                            disabled={
+                                isLoadingQualities || isLoadingProfessions
+                            }
                         />
                         <RadioField
                             options={[
@@ -126,20 +125,28 @@ const UserEditPage = ({ userId }) => {
                             name="sex"
                             onChange={handelChange}
                             label="Выберите ваш пол"
-                            disabled={isFetching}
+                            disabled={
+                                isLoadingQualities || isLoadingProfessions
+                            }
                         />
                         <MultiSelectField
-                            options={qualities}
+                            options={getQualitiesWithForma()}
                             onChange={handelChange}
                             name="qualities"
                             label="Выберите ваши качества"
-                            value={data.qualities}
+                            value={getFormatQualitiesForValue(data.qualities)}
                             defaultValue={data.qualities}
-                            disabled={isFetching}
+                            disabled={
+                                isLoadingQualities || isLoadingProfessions
+                            }
                         />
                         <button
                             type="submit"
-                            disabled={!isValid || isFetching}
+                            disabled={
+                                !isValid ||
+                                isLoadingQualities ||
+                                isLoadingProfessions
+                            }
                             className="btn btn-primary w-100 mx-auto"
                         >
                             Обновить

@@ -3,12 +3,12 @@ import PropTypes from 'prop-types'
 import Quality from './quality'
 import { useQualities } from '../../../hooks/useQualities'
 
-const QualitiesList = ({ qualitiesId }) => {
+const QualitiesList = ({ qualities }) => {
     const { isLoading } = useQualities()
     if (!isLoading) {
         return (
             <>
-                {qualitiesId.map((id) => (
+                {qualities.map((id) => (
                     <Quality key={id} id={id} />
                 ))}
             </>
@@ -17,7 +17,7 @@ const QualitiesList = ({ qualitiesId }) => {
 }
 
 QualitiesList.propTypes = {
-    qualitiesId: PropTypes.array.isRequired
+    qualities: PropTypes.array.isRequired
 }
 
 export default QualitiesList

@@ -23,7 +23,7 @@ export const QualitiesProvider = ({ children }) => {
             toast(error)
             setError(null)
         }
-    })
+    }, [error])
 
     async function getQualitiesList() {
         try {

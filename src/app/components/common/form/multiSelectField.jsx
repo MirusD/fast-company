@@ -18,8 +18,9 @@ const MultiSelectField = ({
                   value: options[optionName]._id
               }))
             : options
+
     const handelChange = (value) => {
-        onChange({ name, value })
+        onChange({ name, value: value.map((v) => v.value) })
     }
     return (
         <div className="mb-4">

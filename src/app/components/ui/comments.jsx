@@ -1,39 +1,17 @@
-import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
-import { orderBy } from 'lodash'
-
-import api from '../../api'
-
+import React from 'react'
 import AddNewCommentForm from '../common/comments/addNewCommentForm'
 import CommentsList from '../common/comments/commentsList'
+import { useComments } from '../../hooks/useComments'
 
 const Comments = () => {
-    const { userId } = useParams()
-    const [comments, setComments] = useState()
-    const [isFetching, setIsFetching] = useState(true)
-
-    useEffect(() => {
-        api.comments
-            .fetchCommentsForUser(userId)
-            .then((data) => {
-                const sortedComments = orderBy(data, ['create_at'], ['desc'])
-                setComments(sortedComments)
-            })
-            .finally(() => setIsFetching(false))
-    }, [])
+    const { createComment, comments, isLoading, removeComment } = useComments()
 
     const handleSubmit = (newComments) => {
-        api.comments
-            .add({ ...newComments, pageId: userId })
-            .then((data) => setComments([...comments, data]))
+        createComment(newComments)
     }
 
     const handleRemoveComment = (id) => {
-        api.comments
-            .remove(id)
-            .then((_id) =>
-                setComments(comments.filter((comment) => comment._id !== _id))
-            )
+        removeComment(id)
     }
 
     return (
@@ -44,7 +22,7 @@ const Comments = () => {
                     <AddNewCommentForm onSubmit={handleSubmit} />
                 </div>
             </div>
-            {!isFetching && comments.length !== 0 && (
+            {!isLoading && comments.length !== 0 && (
                 <div className="card mb-3">
                     <div className="card-body ">
                         <h2>Comments</h2>

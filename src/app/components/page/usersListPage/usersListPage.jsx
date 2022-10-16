@@ -9,6 +9,7 @@ import UsersTable from '../../ui/usersTable'
 import TextField from '../../common/form/textField'
 import { useUser } from '../../../hooks/useUsers'
 import { useProfession } from '../../../hooks/useProfession'
+import { useAuth } from '../../../hooks/useAuth'
 
 const UsersListPage = () => {
     const [currentPage, setCurrentPage] = useState(1)
@@ -18,7 +19,8 @@ const UsersListPage = () => {
     const pageSize = 8
 
     const { users } = useUser()
-    const { professions } = useProfession()
+    const { currentUser } = useAuth()
+    const { isLoading: professionsLoading, professions } = useProfession()
 
     useEffect(() => {
         setCurrentPage(1)
@@ -42,15 +44,20 @@ const UsersListPage = () => {
     }
     const clearFilter = () => setSelectedProf()
 
-    const filteredUsers = searchQuery
-        ? users.filter(
-              (user) =>
-                  user.name.toLowerCase().indexOf(searchQuery.toLowerCase()) !==
-                  -1
-          )
-        : selectedProf
-        ? users.filter((user) => _.isEqual(user.profession, selectedProf))
-        : users
+    function filterUsers(data) {
+        const filteredUsers = searchQuery
+            ? data.filter(
+                  (user) =>
+                      user.name
+                          .toLowerCase()
+                          .indexOf(searchQuery.toLowerCase()) !== -1
+              )
+            : selectedProf
+            ? data.filter((user) => _.isEqual(user.profession, selectedProf))
+            : data
+        return filteredUsers.filter((u) => u._id !== currentUser._id)
+    }
+    const filteredUsers = filterUsers(users)
     const count = filteredUsers.length
     const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order])
     const userCrop = paginate(sortedUsers, currentPage, pageSize)
@@ -59,7 +66,7 @@ const UsersListPage = () => {
         <>
             {users && (
                 <div className="d-flex">
-                    {professions && (
+                    {professions && !professionsLoading && (
                         <div className="d-flex flex-column flex-shrink-0 p-3">
                             <GroupList
                                 items={professions}

@@ -7,6 +7,8 @@ import Users from './layouts/users'
 import Navbar from './components/ui/navbar'
 import AuthProvider from './hooks/useAuth'
 import Providers from './components/hoc/withProviders'
+import ProtectedRoute from './components/common/protectedRoute'
+import Logout from './layouts/logout'
 
 const App = () => {
     return (
@@ -15,11 +17,12 @@ const App = () => {
                 <Navbar />
                 <Providers>
                     <Switch>
-                        <Route
+                        <ProtectedRoute
                             path="/users/:userId?/:userEdit?"
                             component={Users}
                         />
                         <Route path="/login/:type?" component={Login} />
+                        <Route path="/logout" component={Logout} />
                         <Route path="/" exact component={Main} />
                         <Redirect to="/" />
                     </Switch>
