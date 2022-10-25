@@ -18,19 +18,17 @@ const NavProfile = () => {
                     height="40"
                     className="img-responsive rounded-circle"
                 />
-                <div
-                    className={'w-100 dropdown-menu' + (isOpen ? ' show' : '')}
+            </div>
+            <div className={'w-100 dropdown-menu' + (isOpen ? ' show' : '')}>
+                <Link
+                    to={`/users/${currentUser._id}`}
+                    className="dropdown-item"
                 >
-                    <Link
-                        to={`/users/${currentUser._id}`}
-                        className="dropdown-item"
-                    >
-                        Profile
-                    </Link>
-                    <Link to="logout" className="dropdown-item">
-                        Log Out
-                    </Link>
-                </div>
+                    Profile
+                </Link>
+                <Link to="logout" className="dropdown-item">
+                    Log Out
+                </Link>
             </div>
         </div>
     )

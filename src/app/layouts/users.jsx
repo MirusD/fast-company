@@ -1,23 +1,27 @@
 import React from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, Redirect } from 'react-router-dom'
 import UsersListPage from '../components/page/usersListPage'
 import UserPage from '../components/page/userPage'
 import UserEditPage from '../components/page/userEditPage'
 import UserProvider from '../hooks/useUsers'
+import { useAuth } from '../hooks/useAuth'
 
 const Users = () => {
     const params = useParams()
     const { userId, userEdit } = params
+    const { currentUser } = useAuth()
     return (
         <UserProvider>
             {userId ? (
-                <>
-                    {userEdit === 'edit' ? (
+                userEdit ? (
+                    userId === currentUser._id ? (
                         <UserEditPage userId={userId} />
                     ) : (
-                        <UserPage userId={userId} />
-                    )}
-                </>
+                        <Redirect to={`/users/${currentUser._id}/edit`} />
+                    )
+                ) : (
+                    <UserPage userId={userId} />
+                )
             ) : (
                 <UsersListPage />
             )}

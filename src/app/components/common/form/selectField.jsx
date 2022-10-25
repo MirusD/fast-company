@@ -16,10 +16,7 @@ const SelectField = ({
     }
     const optionsArray =
         !Array.isArray(options) && typeof options === 'object'
-            ? Object.keys(options).map((optionName) => ({
-                  name: options[optionName].name,
-                  _id: options[optionName]._id
-              }))
+            ? Object.values(options)
             : options
     const handleChange = ({ target }) => {
         onChange({ name: target.name, value: target.value })
@@ -40,10 +37,10 @@ const SelectField = ({
                 <option disabled value="">
                     {defaultOption}
                 </option>
-                {optionsArray &&
+                {optionsArray.length > 0 &&
                     optionsArray.map((option) => (
-                        <option value={option._id} key={option._id}>
-                            {option.name}
+                        <option value={option.value} key={option.value}>
+                            {option.label}
                         </option>
                     ))}
             </select>

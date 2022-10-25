@@ -28,6 +28,10 @@ const RegisterForm = () => {
         value: q._id
     }))
     const { professions } = useProfession()
+    const professionsList = professions.map((p) => ({
+        label: p.name,
+        value: p._id
+    }))
     const [errors, setErrors] = useState({})
     const validate = () => {
         const errors = validator(data, validatorConfig)
@@ -135,7 +139,7 @@ const RegisterForm = () => {
             <SelectField
                 label="Выбери свою профессию"
                 defaultOption="Choose..."
-                options={professions}
+                options={professionsList}
                 onChange={handelChange}
                 value={data.profession}
                 error={errors.profession}
