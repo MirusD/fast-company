@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react'
 import AddNewCommentForm from '../common/comments/addNewCommentForm'
 import CommentsList from '../common/comments/commentsList'
-import { useComments } from '../../hooks/useComments'
 import { useDispatch, useSelector } from 'react-redux'
 import {
     getComments,
     getCommentsLoadingStatus,
-    loadCommentsList
+    loadCommentsList,
+    createComment,
+    removeComment
 } from '../../store/comments'
 import { useParams } from 'react-router-dom'
 
@@ -17,15 +18,14 @@ const Comments = () => {
         dispatch(loadCommentsList(userId))
     }, [userId])
     const isLoading = useSelector(getCommentsLoadingStatus())
-    const { createComment, removeComment } = useComments()
     const comments = useSelector(getComments())
 
     const handleSubmit = (newComments) => {
-        createComment(newComments)
+        dispatch(createComment(newComments, userId))
     }
 
     const handleRemoveComment = (id) => {
-        removeComment(id)
+        dispatch(removeComment(id))
     }
 
     return (
