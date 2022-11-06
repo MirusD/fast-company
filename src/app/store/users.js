@@ -4,6 +4,7 @@ import authService from '../services/auth.service'
 import localStorageService from '../services/localStorage.service'
 import getRandomInt from '../utils/getRandomInt'
 import history from '../utils/history'
+import generateAuthError from '../utils/generateAuthError'
 
 const initialState = localStorageService.getAccessToken()
     ? {
@@ -66,6 +67,9 @@ const usersSlice = createSlice({
         },
         userUpdateFailed: (state, action) => {
             state.error = action.payload
+        },
+        authRequested: (state) => {
+            state.error = null
         }
     }
 })
@@ -80,10 +84,10 @@ const {
     userCreated,
     userLoggedOut,
     userUpdated,
-    userUpdateFailed
+    userUpdateFailed,
+    authRequested
 } = actions
 
-const authRequested = createAction('users/authRequested')
 const userCreateRequested = createAction('user/userCreateRequested')
 const createUserFailed = createAction('user/createUserFailed')
 const userUpdateRequested = createAction('user/userUpdate')
@@ -99,7 +103,13 @@ export const login =
             localStorageService.setTokens(data)
             history.push(redirect)
         } catch (error) {
-            dispatch(authRequesteFaild(error.message))
+            const { code, message } = error.response.data.error
+            if (code === 400) {
+                const errorMessage = generateAuthError(message)
+                dispatch(authRequesteFaild(errorMessage))
+            } else {
+                dispatch(authRequesteFaild(error.message))
+            }
         }
     }
 
@@ -186,5 +196,6 @@ export const getUsersLoadingStatus = () => (state) =>
     state.professions.isLoading
 export const getIsLoggedIn = () => (state) => state.users.isLoggedIn
 export const getCurrentUser = () => (state) => state.users.auth.userId
+export const getAuthErrors = () => (state) => state.users.error
 
 export default usersReducer
