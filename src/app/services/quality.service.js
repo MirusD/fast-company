@@ -1,4 +1,5 @@
 import httpServices from './http.services'
+
 const qualityEndpoint = 'quality/'
 
 const qualityService = {

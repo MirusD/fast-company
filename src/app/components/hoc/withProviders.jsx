@@ -1,14 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { ProfessionProvider } from '../../hooks/useProfession'
-import { QualitiesProvider } from '../../hooks/useQualities'
 
 const Providers = ({ children }) => {
-    return (
-        <ProfessionProvider>
-            <QualitiesProvider>{children}</QualitiesProvider>
-        </ProfessionProvider>
-    )
+    return <ProfessionProvider>{children}</ProfessionProvider>
 }
 
 Providers.propTypes = {

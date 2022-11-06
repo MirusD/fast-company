@@ -10,15 +10,25 @@ import SelectField from '../../common/form/selectField'
 import RadioField from '../../common/form/radioField'
 import MultiSelectField from '../../common/form/multiSelectField'
 import BackHistoryButton from '../../common/backButton'
-import { useQualities } from '../../../hooks/useQualities'
-import { useProfession } from '../../../hooks/useProfession'
 import { useAuth } from '../../../hooks/useAuth'
+import { useSelector } from 'react-redux'
+import {
+    getQualities,
+    getQualitiesLoadingStatus
+} from '../../../store/qualities'
+import {
+    getProfessions,
+    getProfessionsLoadingStatus
+} from '../../../store/professions'
 
 const UserEditPage = () => {
     const history = useHistory()
     const [data, setData] = useState()
-    const { qualities, isLoading: qualitiesLoading } = useQualities()
-    const { professions, isLoading: professionLoading } = useProfession()
+    const qualities = useSelector(getQualities())
+    const qualitiesLoading = useSelector(getQualitiesLoadingStatus())
+    const professions = useSelector(getProfessions())
+    console.log(professions)
+    const professionLoading = useSelector(getProfessionsLoadingStatus())
     const { currentUser, updateUser } = useAuth()
     const [isLoading, setIsLoading] = useState(true)
     const [errors, setErrors] = useState({})
