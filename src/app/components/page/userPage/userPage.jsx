@@ -4,12 +4,13 @@ import UserCard from '../../ui/userCard'
 import QualitiesCard from '../../ui/qualitiesCard'
 import MeetingsCard from '../../ui/meetingsCard'
 import Comments from '../../ui/comments'
-import { useUser } from '../../../hooks/useUsers'
 import { CommentsProvider } from '../../../hooks/useComments'
+import { useSelector } from 'react-redux'
+import { getUsersLoadingStatus, getUserById } from '../../../store/users'
 
 const UserPage = ({ userId }) => {
-    const { isLoading, getUserById } = useUser()
-    const user = getUserById(userId)
+    const isLoading = useSelector(getUsersLoadingStatus())
+    const user = useSelector(getUserById(userId))
     if (isLoading || !user) return <h1>Loading</h1>
     return (
         <div className="container">

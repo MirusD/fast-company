@@ -20,6 +20,7 @@ import {
     getProfessions,
     getProfessionsLoadingStatus
 } from '../../../store/professions'
+import { getCurrentUserData } from '../../../store/users'
 
 const UserEditPage = () => {
     const history = useHistory()
@@ -27,9 +28,9 @@ const UserEditPage = () => {
     const qualities = useSelector(getQualities())
     const qualitiesLoading = useSelector(getQualitiesLoadingStatus())
     const professions = useSelector(getProfessions())
-    console.log(professions)
     const professionLoading = useSelector(getProfessionsLoadingStatus())
-    const { currentUser, updateUser } = useAuth()
+    const currentUser = useSelector(getCurrentUserData())
+    const { updateUser } = useAuth()
     const [isLoading, setIsLoading] = useState(true)
     const [errors, setErrors] = useState({})
     const isValid = Object.keys(errors).length === 0
