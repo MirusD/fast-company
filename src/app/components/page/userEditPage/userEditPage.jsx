@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { useHistory } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
 import { validator } from '../../../utils/validator'
@@ -10,8 +9,7 @@ import SelectField from '../../common/form/selectField'
 import RadioField from '../../common/form/radioField'
 import MultiSelectField from '../../common/form/multiSelectField'
 import BackHistoryButton from '../../common/backButton'
-import { useAuth } from '../../../hooks/useAuth'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import {
     getQualities,
     getQualitiesLoadingStatus
@@ -20,17 +18,16 @@ import {
     getProfessions,
     getProfessionsLoadingStatus
 } from '../../../store/professions'
-import { getCurrentUserData } from '../../../store/users'
+import { getCurrentUserData, updateUser } from '../../../store/users'
 
 const UserEditPage = () => {
-    const history = useHistory()
     const [data, setData] = useState()
     const qualities = useSelector(getQualities())
     const qualitiesLoading = useSelector(getQualitiesLoadingStatus())
     const professions = useSelector(getProfessions())
     const professionLoading = useSelector(getProfessionsLoadingStatus())
     const currentUser = useSelector(getCurrentUserData())
-    const { updateUser } = useAuth()
+    const dispatch = useDispatch()
     const [isLoading, setIsLoading] = useState(true)
     const [errors, setErrors] = useState({})
     const isValid = Object.keys(errors).length === 0
@@ -98,11 +95,16 @@ const UserEditPage = () => {
         e.preventDefault()
         const isValid = validate()
         if (!isValid) return
-        updateUser({
-            ...data,
-            qualities: data.qualities.map((q) => q.value)
-        })
-        history.push(`/users/${currentUser._id}`)
+        const redirect = `/users/${currentUser._id}`
+        dispatch(
+            updateUser(
+                {
+                    ...data,
+                    qualities: data.qualities.map((q) => q.value)
+                },
+                redirect
+            )
+        )
     }
 
     return (
