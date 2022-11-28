@@ -20,8 +20,8 @@ const Comments = () => {
     const isLoading = useSelector(getCommentsLoadingStatus())
     const comments = useSelector(getComments())
 
-    const handleSubmit = (newComments) => {
-        dispatch(createComment(newComments, userId))
+    const handleSubmit = (newComment) => {
+        dispatch(createComment(newComment, userId))
     }
 
     const handleRemoveComment = (id) => {

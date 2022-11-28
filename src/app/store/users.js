@@ -88,9 +88,9 @@ const {
     authRequested
 } = actions
 
-const userCreateRequested = createAction('user/userCreateRequested')
-const createUserFailed = createAction('user/createUserFailed')
-const userUpdateRequested = createAction('user/userUpdate')
+const userCreateRequested = createAction('users/userCreateRequested')
+const createUserFailed = createAction('users/createUserFailed')
+const userUpdateRequested = createAction('users/userUpdate')
 
 export const login =
     ({ payload, redirect }) =>
