@@ -1,9 +1,8 @@
 const express = require('express')
 const Profession = require('../models/Profession')
-const auth = require('../middleware/auth.middleware')
 const router = express.Router({ mergeParams: true })
 
-router.get('/', auth, async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         const list = await Profession.find()
         res.status(200).send(list)

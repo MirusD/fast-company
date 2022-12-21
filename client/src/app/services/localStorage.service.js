@@ -51,7 +51,6 @@ const localStorageService = {
 export function accessTokenIsExpired() {
     const expiresDate = localStorageService.getExpiresDateToken()
     const refreshToken = localStorageService.getRefreshToken()
-    console.log(new Date(expiresDate - Date.now()).getMinutes())
     return refreshToken && expiresDate < Date.now()
 }
 

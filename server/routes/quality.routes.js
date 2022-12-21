@@ -1,9 +1,8 @@
 const express = require('express')
 const Quality = require("../models/Quality");
 const router = express.Router({ mergeParams: true })
-const auth = require('../middleware/auth.middleware')
 
-router.get('/', auth, async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         const list = await Quality.find()
         res.status(200).send(list)

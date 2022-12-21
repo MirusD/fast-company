@@ -30,7 +30,6 @@ http.interceptors.request.use(
                 config.params = { ...config.params, auth: accessToken }
             }
         } else {
-            console.log('accessTokenIsExpired: ', isExpired)
             if (isExpired) {
                 const data = await authService.refresh()
                 localStorageService.setTokens(data)

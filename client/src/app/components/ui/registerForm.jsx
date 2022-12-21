@@ -23,6 +23,7 @@ const RegisterForm = () => {
     })
 
     const qualities = useSelector(getQualities())
+    console.log(qualities)
     const qualitiesList = qualities.map((q) => ({
         label: q.name,
         value: q._id
